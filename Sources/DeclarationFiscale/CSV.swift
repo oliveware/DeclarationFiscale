@@ -1,0 +1,115 @@
+import Foundation
+
+enum CSVError: LocalizedError {
+    case invalidHeader
+    case malformed(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidHeader: return "Le fichier CSV ne contient pas d'en-tête."
+        case .malformed(let message): return "CSV invalide : \(message)"
+        }
+    }
+}
+
+struct CSVDocument {
+    var headers: [String]
+    var rows: [[String: String]]
+
+    init(headers: [String], rows: [[String: String]] = []) {
+        self.headers = headers
+        self.rows = rows
+    }
+
+    static func parse(data: Data) throws -> CSVDocument {
+        var text = String(data: data, encoding: .utf8)
+        if text == nil { text = String(data: data, encoding: .windowsCP1252) }
+        guard var text else { throw CSVError.malformed("encodage non reconnu") }
+
+        if text.first == "\u{FEFF}" { text.removeFirst() }
+
+        let matrix = try CSVParser.parse(text)
+        guard let headerRow = matrix.first, !headerRow.isEmpty else {
+            throw CSVError.invalidHeader
+        }
+
+        let headers = headerRow
+        let rows = matrix.dropFirst().map { row in
+            var dict: [String: String] = [:]
+            for (i, header) in headers.enumerated() {
+                dict[header] = i < row.count ? row[i] : ""
+            }
+            return dict
+        }
+        return CSVDocument(headers: headers, rows: rows)
+    }
+
+    func encoded() -> Data {
+        let lines = [headers] + rows.map { row in headers.map { row[$0] ?? "" } }
+        let body = lines.map { $0.map(CSVParser.escape).joined(separator: ";") }.joined(separator: "\r\n")
+        return Data(("\u{FEFF}" + body + "\r\n").utf8)
+    }
+}
+
+enum CSVParser {
+    static func parse(_ text: String) throws -> [[String]] {
+        var result: [[String]] = []
+        var row: [String] = []
+        var field = ""
+        var quoted = false
+        var i = text.startIndex
+
+        while i < text.endIndex {
+            let c = text[i]
+            if quoted {
+                if c == "\"" {
+                    let next = text.index(after: i)
+                    if next < text.endIndex && text[next] == "\"" {
+                        field.append("\"")
+                        i = next
+                    } else {
+                        quoted = false
+                    }
+                } else {
+                    field.append(c)
+                }
+            } else {
+                switch c {
+                case "\"":
+                    quoted = true
+                case ";":
+                    row.append(field); field = ""
+                case "\n":
+                    row.append(field); field = ""
+                    if row.last == "\r" { row.removeLast() }
+                    result.append(row); row = []
+                case "\r":
+                    let next = text.index(after: i)
+                    if next < text.endIndex && text[next] == "\n" {
+                        i = next
+                    } else {
+                        row.append(field); field = ""
+                        result.append(row); row = []
+                    }
+                default:
+                    field.append(c)
+                }
+            }
+            i = text.index(after: i)
+        }
+
+        if quoted { throw CSVError.malformed("guillemet non fermé") }
+        if !field.isEmpty || !row.isEmpty {
+            row.append(field)
+            result.append(row)
+        }
+        return result.filter { !($0.count == 1 && $0[0].isEmpty) }
+    }
+
+    static func escape(_ value: String) -> String {
+        if value.contains(";") || value.contains("\"") || value.contains("\n") || value.contains("\r") {
+            return "\"" + value.replacingOccurrences(of: "\"", with: "\"\"") + "\""
+        }
+        return value
+    }
+}
