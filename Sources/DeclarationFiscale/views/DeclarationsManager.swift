@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+/*
 struct DeclarationsManager: View {
     @StateObject private var model = DeclarationModel()
     @State private var showingImporter = false
@@ -31,12 +31,12 @@ struct DeclarationsManager: View {
 
                 List(selection: $model.selectedIndex) {
                     ForEach(model.filteredIndices, id: \.self) { index in
-                        DeclarationRow(row: model.declarations[index], index: index, kind:model.kind)
+                        DeclarationRow(row: model.declarations[index], index: index)
                             .tag(index as Int?)
                     }
                 }
             }
-            .navigationTitle(model.kind.rawValue + "s")
+           // .navigationTitle(model.kind.rawValue + "s")
             .frame(minWidth: 300)
         } detail: {
             if model.selectedIndex != nil {
@@ -45,7 +45,7 @@ struct DeclarationsManager: View {
                 if model.declarations.isEmpty {
                     Text("charger un fichier CSV")
                 } else {
-                    Text("Choisir \(model.kind.rawValue)")
+                    Text("Choisir \()")
                 }
                 
                /* ContentUnavailableView(
@@ -124,3 +124,4 @@ struct DeclarationsManager: View {
         return Validator.validate(row: model.declarations[i], headers: model.headers)
     }
 }
+*/

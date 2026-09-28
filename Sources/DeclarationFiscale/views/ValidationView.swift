@@ -1,21 +1,5 @@
 
 import SwiftUI
-import UniformTypeIdentifiers
-
-struct DeclarationRow: View {
-    let row: [String: String]
-    let index: Int
-    let kind : DeclarationModel.Kind
-
-    var body: some View {
-        switch kind {
-        case .bien : BienRow(row: row, index: index)
-        case .occupation: OccupationRow(row: row, index: index)
-        }
-    }
-}
-
-
 
 struct ValidationView: View {
     let issues: [ValidationIssue]
@@ -48,20 +32,4 @@ struct ValidationView: View {
     }
 }
 
-struct CSVFileDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.commaSeparatedText, .text] }
 
-    let data: Data
-
-    init(headers: [String], rows: [[String: String]]) {
-        data = CSVDocument(headers: headers, rows: rows).encoded()
-    }
-
-    init(configuration: ReadConfiguration) throws {
-        data = configuration.file.regularFileContents ?? Data()
-    }
-
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        FileWrapper(regularFileWithContents: data)
-    }
-}

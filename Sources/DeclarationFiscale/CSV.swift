@@ -1,4 +1,6 @@
 import Foundation
+import SwiftUI
+import UniformTypeIdentifiers
 
 enum CSVError: LocalizedError {
     case invalidHeader
@@ -9,6 +11,24 @@ enum CSVError: LocalizedError {
         case .invalidHeader: return "Le fichier CSV ne contient pas d'en-tête."
         case .malformed(let message): return "CSV invalide : \(message)"
         }
+    }
+}
+
+struct CSVFileDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.commaSeparatedText, .text] }
+
+    let data: Data
+
+    init(headers: [String], rows: [[String: String]]) {
+        data = CSVDocument(headers: headers, rows: rows).encoded()
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        data = configuration.file.regularFileContents ?? Data()
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
     }
 }
 
