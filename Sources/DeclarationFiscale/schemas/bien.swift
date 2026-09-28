@@ -1,24 +1,25 @@
 //
-//  BienCSVSchema.swift
-//  DeclarationOccupation
+//  schemas.swift
+//  DeclarationFiscale
 //
-//  Created by Herve Crespel on 15/09/2026.
+//  Created by Herve Crespel on 27/09/2026.
 //
 
-enum BienCSVSchema {
-    static let headers: [String] = ["invariant",
-        "typeLocal","typeDesc","cdDept","cdCommune","cdVoie","noVoirie","indRep", "voie","departement","commune","cdPrefix","cdSection","noPlan","noBatiment","noEscalier","noEtage","noPorte","lots","cdNature","cdConstParticuliere","nbPiecesPpales","cdDescHab","surface","categorie","surfacePrincipale","surfaceSecCouv","surfaceSecNonCouv","surfaceParkCouv","surfaceParkNonCouv","droits","indivision","noPermis","identifiantProvisoire","spi_delegataire","siren_delegataire"]
+var bienSchema = DeclarationSchema (
     
-    static let groups: [(String, [String])] = [
+    headers:["invariant",
+        "typeLocal","typeDesc","cdDept","cdCommune","cdVoie","noVoirie","indRep", "voie","departement","commune","cdPrefix","cdSection","noPlan","noBatiment","noEscalier","noEtage","noPorte","lots","cdNature","cdConstParticuliere","nbPiecesPpales","cdDescHab","surface","categorie","surfacePrincipale","surfaceSecCouv","surfaceSecNonCouv","surfaceParkCouv","surfaceParkNonCouv","droits","indivision","noPermis","identifiantProvisoire","spi_delegataire","siren_delegataire"],
+    
+    groups:[
         ("id", ["invariant"]),
         ("Adresse", ["typeLocal","typeDesc","cdDept","cdCommune","cdVoie","noVoirie","indRep", "voie","departement","commune","cdPrefix","cdSection","noPlan","noBatiment","noEscalier","noEtage","noPorte"]),
         ("Nature", ["lots","cdNature","cdConstParticuliere","nbPiecesPpales","cdDescHab"]),
         ("Surface", ["surface","categorie","surfacePrincipale", "surfaceSecCouv","surfaceSecNonCouv","surfaceParkCouv","surfaceParkNonCouv"]),
         ("Droits", ["droits","indivision","noPermis","identifiantProvisoire", "spi_delegataire","siren_delegataire"])
-        ]
+        ],
     
-    static func label(for key: String) -> String {
-        let labels: [String: String] = ["invariant":"invariant",
+    
+       labels:  ["invariant":"invariant",
             "typeLocal":"type local",
             "typeDesc":"type description",
             "cdDept":"code département",
@@ -54,6 +55,4 @@ enum BienCSVSchema {
             "identifiantProvisoire":"id provisoire",
             "spi_delegataire":"SPI délégataire",
             "siren_delegataire":"SIREN délégataire"]
-        return labels[key] ?? key
-    }
-}
+    )

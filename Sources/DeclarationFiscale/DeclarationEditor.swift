@@ -1,39 +1,19 @@
 //
-//  OccupationEditor.swift
-//  DeclarationOccupation
+//  DeclarationEditor.swift
+//  DeclarationFiscale
 //
-//  Created by Herve Crespel on 15/09/2026.
+//  Created by Herve Crespel on 27/09/2026.
 //
 import SwiftUI
 
-struct OccupationRow: View {
-    let row: [String: String]
-    let index: Int
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(row["noFiscalDuLocal"]?.isEmpty == false ? "local " + row["noFiscalDuLocal"]! : "Déclaration \(index + 1)")
-                .font(.headline)
-            Text([row["libelle_commune"], row["libelle_voie"]]
-                .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " — "))
-                .foregroundStyle(.secondary)
-                .lineLimit(1)
-            Text([row["nomNaissOcc_1"], row["prenomOcc_1"], row["denomSoc_1"]]
-                .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " "))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-        }
-        .padding(.vertical, 2)
-    }
-}
-/*
-public struct OccupationEditor: View {
+public struct DeclarationEditor: View {
     @ObservedObject var model: DeclarationModel
+    var schema: DeclarationSchema
 
     public var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                ForEach(Array(OccupationCSVSchema.groups.enumerated()), id: \.offset) { _, group in
+                ForEach(Array(schema.groups.enumerated()), id: \.offset) { _, group in
                     GroupBox(group.0) {
                         LazyVGrid(columns: [
                             GridItem(.flexible(minimum: 220), alignment: .leading),
@@ -42,7 +22,7 @@ public struct OccupationEditor: View {
                             ForEach(group.1.filter { model.headers.contains($0) }, id: \.self) { key in
                                 FieldEditor(
                                     key: key,
-                                    label: OccupationCSVSchema.label(for: key),
+                                    label: schema.label(for: key),
                                   //  previousValue: model.previous[key],
                                    // liveValue: model.live,
                                     value: Binding(
@@ -56,7 +36,7 @@ public struct OccupationEditor: View {
                     }
                 }
 
-                if model.headers.count != OccupationCSVSchema.headers.count {
+                if model.headers.count != schema.headers.count {
                     GroupBox("Colonnes supplémentaires") {
                         Text("Le fichier importé contient \(model.headers.count) colonnes. Les colonnes qui ne sont pas dans le schéma 2025 sont conservées et seront exportées.")
                             .foregroundStyle(.secondary)
@@ -68,4 +48,3 @@ public struct OccupationEditor: View {
         .navigationTitle("Déclaration d'occupation" + (model.value("noFiscalDuLocal").isEmpty ?  "" : " du local " + model.value("noFiscalDuLocal")))
     }
 }
-*/

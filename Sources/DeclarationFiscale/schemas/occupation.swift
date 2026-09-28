@@ -1,7 +1,7 @@
 import Foundation
 
-enum OccupationCSVSchema {
-    static let headers: [String] = [
+var occupationSchema = DeclarationSchema(
+    headers:  [
         "declarer","annuler_occupation","noFiscalDuLocal","idGroupLoc","cdDept",
         "libelle_departement","libelle_commune","noVoirie","indRep","libelle_voie",
         "noBatiment","noEscalier","noEtage","noPorte","cdPrefix","cdSection","noPlan",
@@ -16,9 +16,9 @@ enum OccupationCSVSchema {
         "denomGestionnaire","sirenPersonnePhysique","sirenGestionnaire","observation",
         "codeExclusionTlvThlv","dteDerniereDecla","identifiantProvisoire","spi_delegataire",
         "siren_delegataire"
-    ]
+    ],
 
-    static let groups: [(String, [String])] = [
+    groups:  [
         ("Type de déclaration", ["declarer","annuler_occupation"]),
         ("Local", [
             "noFiscalDuLocal","idGroupLoc","cdDept",
@@ -49,10 +49,9 @@ enum OccupationCSVSchema {
             "codeExclusionTlvThlv","dteDerniereDecla","identifiantProvisoire",
             "spi_delegataire","siren_delegataire"
         ])
-    ]
+    ],
 
-    static func label(for key: String) -> String {
-        let labels: [String: String] = [
+     labels: [
             "declarer":"Déclarer", "annuler_occupation":"Annuler l'occupation",
             "noFiscalDuLocal":"N° fiscal du local", "idGroupLoc":"Identifiant groupe local",
             "cdDept":"Code département", "libelle_departement":"Département",
@@ -86,6 +85,5 @@ enum OccupationCSVSchema {
             "identifiantProvisoire":"Identifiant provisoire", "spi_delegataire":"SPI délégataire",
             "siren_delegataire":"SIREN délégataire"
         ]
-        return labels[key] ?? key
-    }
-}
+    )
+

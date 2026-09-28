@@ -1,13 +1,19 @@
-import SwiftUI
-import UniformTypeIdentifiers
+//
+//  DeclarationsManager.swift
+//  DeclarationFiscale
+//
+//  Created by Herve Crespel on 27/09/2026.
+//
 
-struct ContentView: View {
-    @StateObject private var model = AppModel()
+import SwiftUI
+
+struct DeclarationsManager: View {
+    @StateObject private var model = DeclarationModel()
     @State private var showingImporter = false
     @State private var showingExporter = false
     @State private var showingValidation = false
     @State private var validationIssues: [ValidationIssue] = []
-    
+    var schema :DeclarationSchema
     var live:[[String: String]] = []
 
     var body: some View {
@@ -34,7 +40,7 @@ struct ContentView: View {
             .frame(minWidth: 300)
         } detail: {
             if model.selectedIndex != nil {
-                DeclarationEditor(model: model)
+                DeclarationEditor(model: model, schema:schema)
             } else {
                 if model.declarations.isEmpty {
                     Text("charger un fichier CSV")
@@ -108,7 +114,7 @@ struct ContentView: View {
             .background(.bar)
         }
         .sheet(isPresented: $showingValidation) {
-            ValidationView(issues: validationIssues)
+            ValidationView(issues: validationIssues, schema:schema)
                 .frame(minWidth: 520, minHeight: 320)
         }
     }
@@ -116,99 +122,5 @@ struct ContentView: View {
     private func currentValidation() -> [ValidationIssue] {
         guard let i = model.selectedIndex else { return [] }
         return Validator.validate(row: model.declarations[i], headers: model.headers)
-    }
-}
-
-struct DeclarationEditor: View {
-    @ObservedObject var model: AppModel
-
-    var body: some View {
-        switch model.kind {
-        case .bien : BienEditor(model: model)
-        case .occupation: OccupationEditor(model: model)
-        }
-    }
-}
-
-struct DeclarationRow: View {
-    let row: [String: String]
-    let index: Int
-    let kind : AppModel.Kind
-
-    var body: some View {
-        switch kind {
-        case .bien : BienRow(row: row, index: index)
-        case .occupation: OccupationRow(row: row, index: index)
-        }
-    }
-}
-
-struct FieldEditor: View {
-    let key: String
-    let label: String
-    @Binding var value: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-            if key == "observation" {
-                TextEditor(text: $value)
-                    .frame(minHeight: 80)
-                    .overlay(RoundedRectangle(cornerRadius: 5).stroke(.quaternary))
-            } else {
-                TextField(label, text: $value)
-                    .textFieldStyle(.roundedBorder)
-            }
-        }
-    }
-}
-
-struct ValidationView: View {
-    let issues: [ValidationIssue]
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Image(systemName: issues.isEmpty ? "checkmark.circle" : "exclamationmark.triangle")
-                Text(issues.isEmpty ? "Validation réussie" : "\(issues.count) problème(s)")
-                    .font(.title2.bold())
-                Spacer()
-                Button("Fermer") { dismiss() }
-            }
-
-            if issues.isEmpty {
-                Text("Aucune anomalie détectée par les contrôles locaux.")
-                    .foregroundStyle(.secondary)
-            } else {
-                List(issues) { issue in
-                    VStack(alignment: .leading) {
-                        Text(OccupationCSVSchema.label(for: issue.field)).font(.headline)
-                        Text(issue.message).foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-        .padding()
-    }
-}
-
-struct CSVFileDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.commaSeparatedText, .text] }
-
-    let data: Data
-
-    init(headers: [String], rows: [[String: String]]) {
-        data = CSVDocument(headers: headers, rows: rows).encoded()
-    }
-
-    init(configuration: ReadConfiguration) throws {
-        data = configuration.file.regularFileContents ?? Data()
-    }
-
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
-        FileWrapper(regularFileWithContents: data)
     }
 }

@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-final class AppModel: ObservableObject {
+final class DeclarationModel: ObservableObject {
     @Published var headers:     [String] = []
     @Published var declarations: [[String: String]] = []
     
@@ -9,32 +9,20 @@ final class AppModel: ObservableObject {
     @Published var searchText = ""
     @Published var status = "Prêt"
     
-    var kind = Kind.occupation
-    func set(_ kind:Kind) {
+    //var kind = Kind.occupation
+    /*func set(_ kind:Kind) {
         self.kind = kind
         switch kind {
-        case .bien : headers = BienCSVSchema.headers
-        case .occupation : headers = OccupationCSVSchema.headers
+        case .bien : headers = bienSchema.headers
+        case .occupation : headers = occupationSchema.headers
         }
-        
-    }
+        var declaration : [String: String] = [:]
+        for header in headers {
+            declaration[header] = ""
+        }
+    }*/
     
-    enum Kind: String {
-        case occupation = "occupation"
-        case bien = "bien"
-        var titre: String {
-            switch self {
-            case .bien : "déclaration de bien"
-            case .occupation : "déclaration d'occupation de bien"
-            }
-        }
-        var filename: String {
-            switch self {
-            case .bien : "declarationbien"
-            case .occupation : "declarationoccupation"
-            }
-        }
-    }
+    
 
     var filteredIndices: [Int] {
         guard !searchText.isEmpty else { return Array(declarations.indices) }
@@ -77,7 +65,7 @@ final class AppModel: ObservableObject {
         declarations[i][key] = value
     }
 
-    func importCSV(url: URL) {
+   /* func importCSV(url: URL) {
         do {
             let data = try Data(contentsOf: url)
             let doc = try CSVDocument.parse(data: data)
@@ -109,9 +97,9 @@ final class AppModel: ObservableObject {
     func resetSchemaIfNeeded() {
         if headers.isEmpty {
             switch kind {
-            case .bien : headers = BienCSVSchema.headers
-            case .occupation : headers = OccupationCSVSchema.headers
+            case .bien : headers = bienSchema.headers
+            case .occupation : headers = occupationSchema.headers
             }
         }
-    }
+    }*/
 }

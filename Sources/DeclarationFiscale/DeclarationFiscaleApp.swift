@@ -1,10 +1,10 @@
 import SwiftUI
-
+/*
 @main
 struct DeclarationFiscaleApp: App {
     var body: some Scene {
         WindowGroup("Déclaration fiscale") {
-            ContentView()
+            DeclarationManager()
                 .frame(minWidth: 1050, minHeight: 720)
         }
     }
@@ -13,3 +13,4 @@ struct DeclarationFiscaleApp: App {
 extension Notification.Name {
     static let newDeclaration = Notification.Name("newDeclaration")
 }
+*/

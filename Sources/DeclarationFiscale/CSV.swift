@@ -15,6 +15,24 @@ enum CSVError: LocalizedError {
 struct CSVDocument {
     var headers: [String]
     var rows: [[String: String]]
+    var status = ""
+    var kind = Kind.occupation
+    enum Kind: String {
+        case occupation = "occupation"
+        case bien = "bien"
+        var titre: String {
+            switch self {
+            case .bien : "déclaration de bien"
+            case .occupation : "déclaration d'occupation de bien"
+            }
+        }
+        var filename: String {
+            switch self {
+            case .bien : "declarationbien"
+            case .occupation : "declarationoccupation"
+            }
+        }
+    }
 
     init(headers: [String], rows: [[String: String]] = []) {
         self.headers = headers
@@ -48,6 +66,35 @@ struct CSVDocument {
         let lines = [headers] + rows.map { row in headers.map { row[$0] ?? "" } }
         let body = lines.map { $0.map(CSVParser.escape).joined(separator: ";") }.joined(separator: "\r\n")
         return Data(("\u{FEFF}" + body + "\r\n").utf8)
+    }
+    
+    mutating func importCSV(url: URL) {
+        do {
+            let data = try Data(contentsOf: url)
+            let doc = try CSVDocument.parse(data: data)
+            headers = doc.headers
+            rows = doc.rows
+           // selectedIndex = declarations.isEmpty ? nil : 0
+            if headers[0] == "declarer" {
+                status = "\(rows.count) occupation(s) importée(s)"
+                kind = .occupation
+            } else {
+                status = "\(rows.count) bien(s) importé(s)"
+                kind = .bien
+            }
+        } catch {
+            status = "Erreur : \(error.localizedDescription)"
+        }
+    }
+    
+    mutating func exportCSV(url: URL) {
+        let doc = CSVDocument(headers: headers, rows: rows)
+        do {
+            try doc.encoded().write(to: url, options: .atomic)
+            status = "\(rows.count) déclaration(s) exportée(s)"
+        } catch {
+            status = "Erreur d'export : \(error.localizedDescription)"
+        }
     }
 }
 

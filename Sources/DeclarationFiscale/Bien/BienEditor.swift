@@ -28,7 +28,7 @@ struct BienRow: View {
     }
 }
 
-struct BienEditor: View {
+/*struct BienEditor: View {
     @ObservedObject var model: AppModel
 
     var body: some View {
@@ -66,4 +66,4 @@ struct BienEditor: View {
         }
         .navigationTitle(model.value("noFiscalDuLocal").isEmpty ? "Déclaration de bien" : model.value("noFiscalDuLocal"))
     }
-}
+}*/
