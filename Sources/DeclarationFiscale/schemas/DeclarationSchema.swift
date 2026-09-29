@@ -5,7 +5,7 @@
 //  Created by Herve Crespel on 15/09/2026.
 //
 
-struct DeclarationSchema {
+public struct DeclarationSchema {
     init (headers:[String], groups:[(String, [String])], labels:[String:String]) {
         self.headers = headers
         self.groups = groups

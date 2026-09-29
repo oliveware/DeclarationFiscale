@@ -15,7 +15,7 @@ public struct DeclarationComparator: View {
     
     var headers:[String] { Array(declaration.keys) }
     
-    init(declaration: Binding<[String : String]>, previous: [String : String], real: [String : String], schema: DeclarationSchema) {
+   public init(declaration: Binding<[String : String]>, previous: [String : String], real: [String : String], schema: DeclarationSchema) {
         _declaration = declaration
         self.previous = previous
         self.real = real
