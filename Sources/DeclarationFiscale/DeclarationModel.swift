@@ -67,12 +67,12 @@ public final class DeclarationModel: ObservableObject {
 
 
 
-    func resetSchemaIfNeeded() {
+  /*  func resetSchemaIfNeeded() {
         if headers.isEmpty {
             switch kind {
             case .bien : headers = bienSchema.headers
             case .occupation : headers = occupationSchema.headers
             }
         }
-    }
+    }*/
 }
