@@ -32,11 +32,27 @@ public struct CSVFileDocument: FileDocument {
     }
 }
 
-struct CSVDocument {
+public struct CSVDocument {
     var headers: [String]
     var rows: [[String: String]]
     var status = ""
-    
+    var kind = Kind.occupation
+    enum Kind: String {
+        case occupation = "occupation"
+        case bien = "bien"
+        var titre: String {
+            switch self {
+            case .bien : "déclaration de bien"
+            case .occupation : "déclaration d'occupation de bien"
+            }
+        }
+        var filename: String {
+            switch self {
+            case .bien : "declarationbien"
+            case .occupation : "declarationoccupation"
+            }
+        }
+    }
 
     init(headers: [String], rows: [[String: String]] = []) {
         self.headers = headers
@@ -72,7 +88,7 @@ struct CSVDocument {
         return Data(("\u{FEFF}" + body + "\r\n").utf8)
     }
     
-    mutating func importCSV(url: URL) {
+    public mutating func importCSV(url: URL) {
         do {
             let data = try Data(contentsOf: url)
             let doc = try CSVDocument.parse(data: data)
@@ -91,7 +107,7 @@ struct CSVDocument {
         }
     }
     
-    mutating func exportCSV(url: URL) {
+    public mutating func exportCSV(url: URL) {
         let doc = CSVDocument(headers: headers, rows: rows)
         do {
             try doc.encoded().write(to: url, options: .atomic)

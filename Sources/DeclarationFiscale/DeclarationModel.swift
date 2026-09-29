@@ -9,23 +9,7 @@ public final class DeclarationModel: ObservableObject {
     @Published var searchText = ""
     @Published var status = "Prêt"
     
-    var kind = Kind.occupation
-    enum Kind: String {
-        case occupation = "occupation"
-        case bien = "bien"
-        var titre: String {
-            switch self {
-            case .bien : "déclaration de bien"
-            case .occupation : "déclaration d'occupation de bien"
-            }
-        }
-        var filename: String {
-            switch self {
-            case .bien : "declarationbien"
-            case .occupation : "declarationoccupation"
-            }
-        }
-    }
+   
     /*func set(_ kind:Kind) {
         self.kind = kind
         switch kind {
@@ -81,34 +65,7 @@ public final class DeclarationModel: ObservableObject {
         declarations[i][key] = value
     }
 
-   func importCSV(url: URL) {
-        do {
-            let data = try Data(contentsOf: url)
-            let doc = try CSVDocument.parse(data: data)
-            headers = doc.headers
-            declarations = doc.rows
-            selectedIndex = declarations.isEmpty ? nil : 0
-            if headers[0] == "declarer" {
-                status = "\(declarations.count) occupation(s) importée(s)"
-                kind = .occupation
-            } else {
-                status = "\(declarations.count) bien(s) importé(s)"
-                kind = .bien
-            }
-        } catch {
-            status = "Erreur : \(error.localizedDescription)"
-        }
-    }
 
-    func exportCSV(url: URL) {
-        let doc = CSVDocument(headers: headers, rows: declarations)
-        do {
-            try doc.encoded().write(to: url, options: .atomic)
-            status = "\(declarations.count) déclaration(s) exportée(s)"
-        } catch {
-            status = "Erreur d'export : \(error.localizedDescription)"
-        }
-    }
 
     func resetSchemaIfNeeded() {
         if headers.isEmpty {
