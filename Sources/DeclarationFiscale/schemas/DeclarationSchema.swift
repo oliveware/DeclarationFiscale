@@ -12,6 +12,14 @@ struct DeclarationSchema {
         self.labels = labels
     }
     
+    init(_ kind:KindOfDeclaration) {
+        switch kind {
+        case .bien:         self = bienSchema
+        case .occupation:   self = occupationSchema
+        default: headers = [] ; groups = [] ; labels = [:]
+        }
+    }
+    
     let headers: [String]
     let groups: [(String, [String])]
     let labels: [String: String]

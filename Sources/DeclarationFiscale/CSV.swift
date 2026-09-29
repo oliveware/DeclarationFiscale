@@ -34,29 +34,16 @@ public struct CSVFileDocument: FileDocument {
 
 public struct CSVDocument {
     var headers: [String]
-    var rows: [[String: String]]
-    var status = ""
-    var kind = Kind.occupation
-    enum Kind: String {
-        case occupation = "occupation"
-        case bien = "bien"
-        var titre: String {
-            switch self {
-            case .bien : "déclaration de bien"
-            case .occupation : "déclaration d'occupation de bien"
-            }
-        }
-        var filename: String {
-            switch self {
-            case .bien : "declarationbien"
-            case .occupation : "declarationoccupation"
-            }
-        }
-    }
+    public var rows: [[String: String]]
+    public var status = ""
+    var kind = KindOfDeclaration.unknown
+  
 
     public init(headers: [String] = [], rows: [[String: String]] = []) {
         self.headers = headers
         self.rows = rows
+        if headers.contains("invariant") { kind = .bien}
+        if headers.contains("invariant") { kind = .occupation}
     }
 
     static func parse(data: Data) throws -> CSVDocument {
