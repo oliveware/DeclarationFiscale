@@ -15,11 +15,11 @@ public struct DeclarationComparator: View {
     
     var headers:[String] { Array(declaration.keys) }
     
-   public init(declaration: Binding<[String : String]>, previous: [String : String], real: [String : String], schema: DeclarationSchema) {
+   public init(_ declaration: Binding<[String : String]>, _ previous: [String : String], _ real: [String : String], _ kind: KindOfDeclaration) {
         _declaration = declaration
         self.previous = previous
         self.real = real
-        self.schema = schema
+        schema = DeclarationSchema(kind)
     }
 
     public var body: some View {
@@ -75,8 +75,10 @@ struct DeclarationPrecomparator: View {
     @State var model : [String:String]
     var previous: [String:String]
     var real: [String:String]
-    var schema = bienSchema
+    var kind = KindOfDeclaration.bien
+    
     init() {
+        let schema = DeclarationSchema(kind)
         model = declaration(schema.headers, "model")
        real = declaration(schema.headers, "real")
         previous = declaration(schema.headers, "avant")
@@ -84,7 +86,7 @@ struct DeclarationPrecomparator: View {
     
     var body: some View {
         ScrollView {
-            DeclarationComparator(declaration:$model, previous:previous, real: real, schema: schema)
+            DeclarationComparator($model, previous,  real, kind)
         }
     }
 }
