@@ -14,8 +14,8 @@ enum CSVError: LocalizedError {
     }
 }
 
-struct CSVFileDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.commaSeparatedText, .text] }
+public struct CSVFileDocument: FileDocument {
+    public static var readableContentTypes: [UTType] { [.commaSeparatedText, .text] }
 
     let data: Data
 
@@ -23,11 +23,11 @@ struct CSVFileDocument: FileDocument {
         data = CSVDocument(headers: headers, rows: rows).encoded()
     }
 
-    init(configuration: ReadConfiguration) throws {
+    public init(configuration: ReadConfiguration) throws {
         data = configuration.file.regularFileContents ?? Data()
     }
 
-    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+    public func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
         FileWrapper(regularFileWithContents: data)
     }
 }
@@ -36,23 +36,7 @@ struct CSVDocument {
     var headers: [String]
     var rows: [[String: String]]
     var status = ""
-    var kind = Kind.occupation
-    enum Kind: String {
-        case occupation = "occupation"
-        case bien = "bien"
-        var titre: String {
-            switch self {
-            case .bien : "déclaration de bien"
-            case .occupation : "déclaration d'occupation de bien"
-            }
-        }
-        var filename: String {
-            switch self {
-            case .bien : "declarationbien"
-            case .occupation : "declarationoccupation"
-            }
-        }
-    }
+    
 
     init(headers: [String], rows: [[String: String]] = []) {
         self.headers = headers

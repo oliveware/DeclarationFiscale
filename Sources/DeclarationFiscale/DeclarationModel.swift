@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-final class DeclarationModel: ObservableObject {
+public final class DeclarationModel: ObservableObject {
     @Published var headers:     [String] = []
     @Published var declarations: [[String: String]] = []
     
@@ -9,7 +9,23 @@ final class DeclarationModel: ObservableObject {
     @Published var searchText = ""
     @Published var status = "Prêt"
     
-    //var kind = Kind.occupation
+    var kind = Kind.occupation
+    enum Kind: String {
+        case occupation = "occupation"
+        case bien = "bien"
+        var titre: String {
+            switch self {
+            case .bien : "déclaration de bien"
+            case .occupation : "déclaration d'occupation de bien"
+            }
+        }
+        var filename: String {
+            switch self {
+            case .bien : "declarationbien"
+            case .occupation : "declarationoccupation"
+            }
+        }
+    }
     /*func set(_ kind:Kind) {
         self.kind = kind
         switch kind {
@@ -65,7 +81,7 @@ final class DeclarationModel: ObservableObject {
         declarations[i][key] = value
     }
 
-   /* func importCSV(url: URL) {
+   func importCSV(url: URL) {
         do {
             let data = try Data(contentsOf: url)
             let doc = try CSVDocument.parse(data: data)
@@ -101,5 +117,5 @@ final class DeclarationModel: ObservableObject {
             case .occupation : headers = occupationSchema.headers
             }
         }
-    }*/
+    }
 }
