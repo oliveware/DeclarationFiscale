@@ -54,7 +54,7 @@ public struct CSVDocument {
         }
     }
 
-    init(headers: [String], rows: [[String: String]] = []) {
+    public init(headers: [String] = [], rows: [[String: String]] = []) {
         self.headers = headers
         self.rows = rows
     }
